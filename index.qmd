@@ -1,11 +1,104 @@
 ---
-title: "advanced-quarto"
+title: "How are the penguins going?"
+author: "Yan Holtz"
+date: today
+format:
+  html:
+    toc: true
+    css: style.css
+    code-fold: true
+    code-summary: "Show the code"
 ---
 
-## Quarto
+## Introduction
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+This document analyses what's into the famous Palmer Penguins dataset. The dataset has been found [on the web](https://gist.github.com/slopp/ce3b90b9168f2f921784de84fa445651) and copied into this repository.
+
+## Libraries
+
+Analyzing data with R always requires a few libraries. Let's load them all at the top of this document. If you are trying to replicate this work, you probably want to install them first with `install.packages()`\`
+
+```{r, warning=FALSE, message=FALSE}
+library(ggplot2)  # to create most of the charts
+library(DT)       # to show an interactive table in this doc
+library(hrbrthemes)
+```
+
+## Data loading
+
+Let's load it!
 
 ```{r}
-1 + 1
+data <- read.csv("data/penguins.csv")
+
+```
+
+We now have a tibble (= a data frame) that we can start exploring. In case you are curious, this is how the dataset looks like:
+
+```{r}
+datatable(data, rownames = FALSE, filter="top", options = list(pageLength = 5, scrollX=T) )
+
+```
+
+## Relationship between **Bill length vs. depth**
+
+Let's start by checking the relationship between Bill Length and Bill depth. At first sight, it looks like there is an **inverse correlation** between those 2 variables:
+
+```{r, warning=FALSE, message=FALSE}
+ggplot(
+  data,
+  aes(
+    x = bill_length_mm,
+    y = bill_depth_mm
+  )
+) +
+  geom_point() +
+  labs(
+    title = "Penguin bill dimensions",
+    subtitle = "Palmer Station LTER",
+    x = "Bill length (mm)",
+    y = "Bill depth (mm)"
+  ) +
+  theme(
+    plot.title.position = "plot",
+    plot.caption = element_text(hjust = 0, face = "italic"),
+    plot.caption.position = "plot"
+  ) +
+  geom_smooth(method = "lm", se = FALSE, color = "gray50") +
+  theme_ipsum()
+
+```
+
+This result being surprising, it is possibly a great idea to check the result specie per specie, in the quest for a Simpson Paradox:
+
+```{r, warning=FALSE, message=FALSE}
+ggplot(
+  data,
+  aes(
+    x = bill_length_mm,
+    y = bill_depth_mm,
+    group = species
+  )
+) +
+  geom_point(
+    aes(
+      color = species,
+      shape = species
+    ),
+    size = 3,
+    alpha = 0.8
+  ) +
+  geom_smooth(method = "lm", se = FALSE, aes(color = species)) +
+  scale_color_manual(values = c("darkorange", "purple", "cyan4")) +
+  labs(
+    title = "Penguin bill dimensions",
+    subtitle = "Bill length and depth for Adelie, Chinstrap and Gentoo Penguins at Palmer Station LTER",
+    x = "Bill length (mm)",
+    y = "Bill depth (mm)",
+    color = "Penguin species",
+    shape = "Penguin species"
+  ) +
+  theme_ipsum()
+  
+
 ```
