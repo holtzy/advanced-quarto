@@ -12,7 +12,7 @@ format:
 
 ## Introduction
 
-This document analyses what's into the famous Palmer Penguins dataset. The dataset has been found [on the web](https://gist.github.com/slopp/ce3b90b9168f2f921784de84fa445651) and copied into this repository.
+This document analyses what's into the famous Palmer Penguins dataset. The dataset has been found [on the web](https://gist.github.com/slopp/ce3b90b9168f2f921784de84fa445651) and copied into this repository..
 
 ## Libraries
 
@@ -29,6 +29,7 @@ library(hrbrthemes)
 Let's load it!
 
 ```{r}
+# Load data --------------------------------------
 data <- read.csv("data/penguins.csv")
 
 ```
@@ -36,7 +37,11 @@ data <- read.csv("data/penguins.csv")
 We now have a tibble (= a data frame) that we can start exploring. In case you are curious, this is how the dataset looks like:
 
 ```{r}
-datatable(data, rownames = FALSE, filter="top", options = list(pageLength = 5, scrollX=T) )
+# Show data --------------------------------------
+datatable(data,
+  rownames = FALSE,
+  filter = "top", options = list(pageLength = 5, scrollX = T)
+)
 
 ```
 
